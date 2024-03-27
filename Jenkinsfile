@@ -1,12 +1,7 @@
 node {
     def app
     stage('Clone repository') {
-        when {
-              expression {
-                env.BRANCH_NAME == 'dev' 
-              }
-            }
-        checkout scm
+        sh 'git checkout dev'
     }
     stage('Build image') {
        app = docker.build("bxbi/kiii-labs")
