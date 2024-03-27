@@ -3,21 +3,24 @@ node {
     stage('Clone repository') {
         checkout scm
     }
-    script {
-        if (env.BRANCH_NAME == 'dev') {
-            stage('Build image') {
-               app = docker.build("mjovanovik/kiii-jenkins")
+    if (env.BRANCH_NAME == 'dev') {
+        stage('Build image') {
+            steps {
+                app = docker.build("bxbi/kiii-labs")
             }
-            stage('Push image') {   
-                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+        }
+        stage('Push image') {
+            steps{
+                docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                     app.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
                     app.push("${env.BRANCH_NAME}-latest")
                     // signal the orchestrator that there is a new version
                 }
             }
         }
-        else {
-            echo 'Not dev Branch'
-        }
     }
-}
+    else{
+        echo 'This is not a dev branch'
+    }
+} 
+
