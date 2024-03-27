@@ -1,12 +1,17 @@
 node {
     def app
     stage('Clone repository') {
+        when {
+              expression {
+                env.BRANCH_NAME == 'dev' 
+              }
+            }
         checkout scm
     }
     stage('Build image') {
        app = docker.build("bxbi/kiii-labs")
     }
-    stage('Push image') {   
+    stage('Push image') {
         docker.withRegistry('https://registry.hub.docker.com', 'docker') {
             app.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
             app.push("${env.BRANCH_NAME}-latest")
