@@ -20,4 +20,14 @@ node {
             }
         }
     }
+    when{
+        expression {
+                env.BRANCH_NAME != 'dev' 
+              }
+    }
+    stages {
+        stage('Not dev') {
+           checkout scm
+        }
+    }
 }
